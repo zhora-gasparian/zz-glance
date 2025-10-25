@@ -1,0 +1,22 @@
+services:
+  glance:
+    container_name: glance
+    image: glanceapp/glance
+    restart: unless-stopped
+    volumes:
+      - /Users/zz_mm/Desktop/glance/config:/app/config
+      - /Users/zz_mm/Desktop/glance/assets:/app/assets
+      - /etc/localtime:/etc/localtime:ro
+      # Optionally, also mount docker socket if you want to use the docker containers widget
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.glance.rule=Host(`glance.zzbyte.dev`)"
+      - "traefik.http.services.glance.loadbalancer.server.port=8080"
+      - "traefik.http.services.glance.loadbalancer.server.scheme=http"
+    env_file: .env
+networks:
+  traefik:
+    external: true
